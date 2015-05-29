@@ -52,7 +52,6 @@ void MultiplyMrtx(double ** a, double** b, double** c) { //произведен�
     }
 }
 void MultiplyMrtxVector(double ** a, double* b, double* c) { //произведение матрицы на вектор
-    
     for (int j = 0; j < m; j++) {
         for (int i = 0; i < 3; i++) {
             c[j] += a[j][i] * b[i];
@@ -107,7 +106,7 @@ void element(coord x1, coord x2, coord x3){ //построение матриц�
     for (int j = 0; j < 3; j++) {
         for (int i = 0;  i < m; i++) {
             if (i+1 == triangle[j].num) omeg[i][j] = 1.0;
-                else omeg[i][j] = 0.0;
+            else omeg[i][j] = 0.0;
         }
     }
     MultiplyMrtxOmK(omeg, k, tmp1);

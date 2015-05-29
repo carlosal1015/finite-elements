@@ -39,9 +39,9 @@ int main(int argc, const char * argv[]) {
     }
     cout <<endl;
     GaussZ(Kend, Fend, Xend, eps);
-        for (int i = 0; i < m; i++){
-            cout << Xend[i] <<endl;
-        }
+    for (int i = 0; i < m; i++){
+        cout << Xend[i] <<endl;
+    }
     cout << endl<< "Time: " << (double) (clock()-t1) / (double)CLOCKS_PER_SEC << endl;
     return 0;
 }
