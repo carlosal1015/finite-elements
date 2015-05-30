@@ -38,9 +38,9 @@ void GaussZ(double** a, double* b, double* x, double e)
         {
             double var = 0;
             for (int j = 0; j < i; j++)
-                var += (a[i][j] * x[j]);
+                var += (a[j][i] * x[j]);
             for (int j = i + 1; j < m; j++)
-                var += (a[i][j] * p[j]);
+                var += (a[j][i] * p[j]);
             x[i] = (b[i] - var) / a[i][i];
         }
     }
