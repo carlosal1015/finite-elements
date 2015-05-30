@@ -16,9 +16,15 @@ using namespace::std;
 
 struct coord
 {
-    double x = 0.0;
-    double y = 0.0;
-    int num = 0;
+    double x;
+    double y;
+    int num;
+    coord()
+    {
+      x = 0.0;
+      y = 0.0;
+      num = 0;
+    }
 };
 double** Kend, *Fend, *Xend;
 double L = 2, M = 4, eps = 0.001;//L - длина прямоугольника, M - ширина
@@ -52,7 +58,6 @@ void MultiplyMrtx(double ** a, double** b, double** c) { //произведен�
     }
 }
 void MultiplyMrtxVector(double ** a, double* b, double* c) { //произведение матрицы на вектор
-    
     for (int j = 0; j < m; j++) {
         for (int i = 0; i < 3; i++) {
             c[j] += a[j][i] * b[i];
@@ -82,15 +87,15 @@ void element(coord x1, coord x2, coord x3){ //построение матриц�
     for (int j = 0; j < 3; j++) {
         k[j] =(double*)malloc(sizeof(double)*3);
     }
-    k[0][0] = h1*h1+l1*l1*lmb(x1.x, x1.y)/(2*h*h);//матрица кэ на треугольнике
-    k[1][0] = h1*h2+l1*l2*lmb(x1.x, x1.y)/(2*h*h);
-    k[2][0] = h1*h3+l1*l3*lmb(x1.x, x1.y)/(2*h*h);
-    k[0][1] = h1*h2+l1*l2*lmb(x1.x, x1.y)/(2*h*h);
-    k[1][1] = h2*h2+l2*l2*lmb(x1.x, x1.y)/(2*h*h);
-    k[2][1] = h2*h3+l2*l3*lmb(x1.x, x1.y)/(2*h*h);
-    k[0][2] = h1*h3+l1*l3*lmb(x1.x, x1.y)/(2*h*h);
-    k[1][2] = h2*h3+l2*l3*lmb(x1.x, x1.y)/(2*h*h);
-    k[2][2] = h3*h3+l3*l3*lmb(x1.x, x1.y)/(2*h*h);
+    k[0][0] = (h1*h1+l1*l1)*lmb(x1.x, x1.y)/(2*h*h);//матрица кэ на треугольнике
+    k[1][0] = (h1*h2+l1*l2)*lmb(x1.x, x1.y)/(2*h*h);
+    k[2][0] = (h1*h3+l1*l3)*lmb(x1.x, x1.y)/(2*h*h);
+    k[0][1] = (h1*h2+l1*l2)*lmb(x1.x, x1.y)/(2*h*h);
+    k[1][1] = (h2*h2+l2*l2)*lmb(x1.x, x1.y)/(2*h*h);
+    k[2][1] = (h2*h3+l2*l3)*lmb(x1.x, x1.y)/(2*h*h);
+    k[0][2] = (h1*h3+l1*l3)*lmb(x1.x, x1.y)/(2*h*h);
+    k[1][2] = (h2*h3+l2*l3)*lmb(x1.x, x1.y)/(2*h*h);
+    k[2][2] = (h3*h3+l3*l3)*lmb(x1.x, x1.y)/(2*h*h);
     
     double* f = (double*)malloc(sizeof(double)*3);
     f[0] = (2*q(x1)+q(x2)+q(x3))*h*h/24;
@@ -107,7 +112,7 @@ void element(coord x1, coord x2, coord x3){ //построение матриц�
     for (int j = 0; j < 3; j++) {
         for (int i = 0;  i < m; i++) {
             if (i+1 == triangle[j].num) omeg[i][j] = 1.0;
-                else omeg[i][j] = 0.0;
+            else omeg[i][j] = 0.0;
         }
     }
     MultiplyMrtxOmK(omeg, k, tmp1);

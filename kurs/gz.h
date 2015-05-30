@@ -26,7 +26,7 @@ bool converge(double *xk, double *xkp)
     return true;
 }
 
-void GaussZ(double** a, double* b, double* x, float e)
+void GaussZ(double** a, double* b, double* x, double e)
 {
     double*p = (double*)malloc(sizeof(double)*m);
     do
