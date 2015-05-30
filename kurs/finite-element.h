@@ -21,22 +21,32 @@ struct coord
     int num;
     coord()
     {
-      x = 0.0;
-      y = 0.0;
-      num = 0;
+        x = 0.0;
+        y = 0.0;
+        num = 0;
+    }
+    coord(double xx, double yy)
+    {
+        x = xx;
+        y = yy;
+        num = 0;
     }
 };
 double** Kend, *Fend, *Xend;
-double L = 2, M = 4, eps = 0.001;//L - длина прямоугольника, M - ширина
-int n1 = 6, n2 = 6, m = n1*n2, n = 2*(n1-1)*(n2-1);
-double h = L/(n1-1);
+double L = 1, M = 1, eps = 0.0000001;//L - длина прямоугольника, M - ширина
+int n1 = 3, n2 = 5, m = n1*n2, n = 2*(n1-1)*(n2-1);
+double hx = L/(n1-1), hy = M/(n2-1);
 
 double lmb(double x, double y){
     return 1;//x*x+4*x*y-3;
 }
 
 double q(coord x){
-    return 1;//2*x.x*x.y+2;
+    return 0;
+}
+
+double g(coord x){ // краевые условия на верхней и нижней границе области
+    return (x.y == 0 ? 50 : 100);
 }
 
 void MultiplyMrtxOmK(double ** a, double** b, double** c) { //умножение матрицы омега на Kij
@@ -87,20 +97,20 @@ void element(coord x1, coord x2, coord x3){ //построение матриц�
     for (int j = 0; j < 3; j++) {
         k[j] =(double*)malloc(sizeof(double)*3);
     }
-    k[0][0] = (h1*h1+l1*l1)*lmb(x1.x, x1.y)/(2*h*h);//матрица кэ на треугольнике
-    k[1][0] = (h1*h2+l1*l2)*lmb(x1.x, x1.y)/(2*h*h);
-    k[2][0] = (h1*h3+l1*l3)*lmb(x1.x, x1.y)/(2*h*h);
-    k[0][1] = (h1*h2+l1*l2)*lmb(x1.x, x1.y)/(2*h*h);
-    k[1][1] = (h2*h2+l2*l2)*lmb(x1.x, x1.y)/(2*h*h);
-    k[2][1] = (h2*h3+l2*l3)*lmb(x1.x, x1.y)/(2*h*h);
-    k[0][2] = (h1*h3+l1*l3)*lmb(x1.x, x1.y)/(2*h*h);
-    k[1][2] = (h2*h3+l2*l3)*lmb(x1.x, x1.y)/(2*h*h);
-    k[2][2] = (h3*h3+l3*l3)*lmb(x1.x, x1.y)/(2*h*h);
+    k[0][0] = (h1*h1+l1*l1)*lmb(x1.x, x1.y)/(2*hx*hy);//матрица кэ на треугольнике
+    k[1][0] = (h1*h2+l1*l2)*lmb(x1.x, x1.y)/(2*hx*hy);
+    k[2][0] = (h1*h3+l1*l3)*lmb(x1.x, x1.y)/(2*hx*hy);
+    k[0][1] = (h1*h2+l1*l2)*lmb(x1.x, x1.y)/(2*hx*hy);
+    k[1][1] = (h2*h2+l2*l2)*lmb(x1.x, x1.y)/(2*hx*hy);
+    k[2][1] = (h2*h3+l2*l3)*lmb(x1.x, x1.y)/(2*hx*hy);
+    k[0][2] = (h1*h3+l1*l3)*lmb(x1.x, x1.y)/(2*hx*hy);
+    k[1][2] = (h2*h3+l2*l3)*lmb(x1.x, x1.y)/(2*hx*hy);
+    k[2][2] = (h3*h3+l3*l3)*lmb(x1.x, x1.y)/(2*hx*hy);
     
     double* f = (double*)malloc(sizeof(double)*3);
-    f[0] = (2*q(x1)+q(x2)+q(x3))*h*h/24;
-    f[1] = (q(x1)+2*q(x2)+q(x3))*h*h/24;
-    f[2] = (q(x1)+q(x2)+2*q(x3))*h*h/24;
+    f[0] = (2*q(x1)+q(x2)+q(x3))*hx*hy/24;
+    f[1] = (q(x1)+2*q(x2)+q(x3))*hx*hy/24;
+    f[2] = (q(x1)+q(x2)+2*q(x3))*hx*hy/24;
     
     for (int j = 0; j < m; j++) {
         for (int i = 0; i < m; i++) {
@@ -156,6 +166,18 @@ void Allelements(coord ** x){ //р
         for (int i = 0; i < n1-1; i++) {
             squareTwoEl(x[i][j], x[i+1][j], x[i][j+1], x[i+1][j+1]);
         }
+    }
+    for (int i = 0; i < n1; i++) {
+        for (int j = 0; j < m; j++) {
+            Kend[j][i] = (i == j);
+        }
+        Fend[i] = g(coord(i*hx, 0));
+    }
+    for (int i = 0; i < n1; i++) {
+        for (int j = 0; j < m; j++) {
+            Kend[j][m-n1+i] = (m-n1+i == j);
+        }
+        Fend[m-n1+i] = g(coord(i*hx, M));
     }
 }
 
