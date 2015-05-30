@@ -16,9 +16,15 @@ using namespace::std;
 
 struct coord
 {
-    double x = 0.0;
-    double y = 0.0;
-    int num = 0;
+    double x;
+    double y;
+    int num;
+    coord()
+    {
+      x = 0.0;
+      y = 0.0;
+      num = 0;
+    }
 };
 double** Kend, *Fend, *Xend;
 double L = 2, M = 4, eps = 0.001;//L - длина прямоугольника, M - ширина

@@ -13,7 +13,7 @@
 #include "finite-element.h"
 #include "gz.h"
 using namespace::std;
-int main(int argc, const char * argv[]) {
+int main(void) {
     clock_t t1 = clock();
     coord** x= (coord**)malloc(sizeof(coord*)*n2);
     for (int j = 0; j < n2; j++) {
