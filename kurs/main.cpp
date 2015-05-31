@@ -7,6 +7,7 @@
 //
 
 #include <iostream>
+#include <iomanip>
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
@@ -14,10 +15,16 @@
 #include "gz.h"
 using namespace::std;
 int main(void) {
-    clock_t t1 = clock();
+    // clock_t t1 = clock();
     coord** x= (coord**)malloc(sizeof(coord*)*n1);
     for (int j = 0; j < n1; j++) {
         x[j] =(coord*)malloc(sizeof(coord)*n2);
+    }
+    Kend = (double**)malloc(sizeof(double*)*m);
+    Fend = (double*)malloc(sizeof(double)*m);
+    Xend = (double*)malloc(sizeof(double)*m);
+    for (int i = 0; i < m; i++) {
+        Kend[i] = (double*)malloc(sizeof(double)*m);
     }
     int count = 1;
     for (int j = 0; j < n2; j++) {
@@ -29,19 +36,29 @@ int main(void) {
         }
     }
     Allelements(x);
-    cout << CheckSymmetric(Kend);
-    cout <<'\t'<< m<<endl<< endl;
+    // cout << CheckSymmetric(Kend);
+    // cout <<'\t'<< m<<endl<< endl;
     for (int j = 0; j < m; j++) {
         for (int i = 0; i < m; i++){
-            cout << Kend[i][j] <<' ';
+            // cout << Kend[i][j] <<' ';
         }
-        cout << "  " <<Fend[j]<<endl;
+        // cout << "  " <<Fend[j]<<endl;
     }
-    cout <<endl;
-    GaussZ(Kend, Fend, Xend, eps);
+    // cout <<endl;
+    GaussZ(Kend, Fend, Xend);
     for (int i = 0; i < m; i++){
-        cout << Xend[i] <<endl;
+        cout << fixed << setprecision(5) << (i%n1)*hx << " " << (i/n1)*hy << " " << Xend[i] << endl;
     }
-    cout << endl<< "Time: " << (double) (clock()-t1) / (double)CLOCKS_PER_SEC << endl;
+    // cout << endl<< "Time: " << (double) (clock()-t1) / (double)CLOCKS_PER_SEC << endl;
+    for (int j = 0; j < n1; j++) {
+        free(x[j]);
+    }
+    for (int i = 0; i < m; i++) {
+        free(Kend[i]);
+    }
+    free(x);
+    free(Kend);
+    free(Fend);
+    free(Xend);
     return 0;
 }
