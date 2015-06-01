@@ -13,9 +13,11 @@
 #include <time.h>
 #include "finite-element.h"
 #include "gz.h"
+#include "fom.h"
+
 using namespace::std;
 int main(void) {
-    // clock_t t1 = clock();
+    clock_t t1 = clock();
     coord** x= (coord**)malloc(sizeof(coord*)*n1);
     for (int j = 0; j < n1; j++) {
         x[j] =(coord*)malloc(sizeof(coord)*n2);
@@ -45,11 +47,12 @@ int main(void) {
         // cout << "  " <<Fend[j]<<endl;
     }
     // cout <<endl;
-    GaussZ(Kend, Fend, Xend);
+    // GaussZ(Kend, Fend, Xend);
+    fom(Kend, Fend, Xend, m);
     for (int i = 0; i < m; i++){
         cout << fixed << setprecision(5) << (i%n1)*hx << " " << (i/n1)*hy << " " << Xend[i] << endl;
     }
-    // cout << endl<< "Time: " << (double) (clock()-t1) / (double)CLOCKS_PER_SEC << endl;
+    cerr << endl<< "Time: " << (double) (clock()-t1) / (double)CLOCKS_PER_SEC << endl;
     for (int j = 0; j < n1; j++) {
         free(x[j]);
     }
