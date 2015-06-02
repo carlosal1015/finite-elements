@@ -12,10 +12,11 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
+#include <string.h>
 #include "finite-element.h"
 #include "matrix.h"
 
-void inner_fom(double** A, double* b, double* x, int n, int m) {
+void ndiag_inner_fom(double* A, double* b, double* x, int n, int m) {
   double* r0;
   double betha;
   double** v = new double*[m];
@@ -27,14 +28,14 @@ void inner_fom(double** A, double* b, double* x, int n, int m) {
   for (int i = 0; i < m; i++) {
     H[i] = new double[m]();
   }
-  r0 = mult_matrix_to_vector(A, x, n);
+  r0 = mult_ndiag_matrix_to_vector(A, x, n);
   r0 = mult_vector_to_scalar_inplace(r0, -1.0, n);
   r0 = add_vector_to_vector_inplace(r0, b, n);
   betha = vector_norm_2(r0, n);
   if (fabs(betha) < 1e-9) goto out;
   v[0] = mult_vector_to_scalar(r0, 1.0/betha, n);
   for (int j = 0; j < m; j++) {
-    w[j] = mult_matrix_to_vector(A, v[j], n);
+    w[j] = mult_ndiag_matrix_to_vector(A, v[j], n);
     for (int i = 0; i <= j; i++) {
       double* tmp;
       H[i][j] = mult_vector_to_vector(w[j], v[i], n);
@@ -88,12 +89,10 @@ out:
   if (f) delete[] f;
   delete[] w;
   if (y) delete[] y;
-
-  return;
 }
 
-double diff(double** A, double* b, double* X, int n) {
-  double* tmp = mult_matrix_to_vector(A, X, n);
+double ndiag_diff(double* A, double* b, double* X, int n) {
+  double* tmp = mult_ndiag_matrix_to_vector(A, X, n);
   double ans;
   tmp = mult_vector_to_scalar_inplace(tmp, -1.0, n);
   tmp = add_vector_to_vector_inplace(tmp, b, n);
@@ -102,35 +101,16 @@ double diff(double** A, double* b, double* X, int n) {
   return ans;
 }
 
-void fom(double** A, double* b, double* x, int n) {
+void fom(double* A, double* b, double* x, int n) {
   double d;
   int cnt = 0;
-  for (int i = 0; i < n; i++) {
-    for (int j = i+1; j < n; j++) {
-      double tmp = A[i][j];
-      A[i][j] = A[j][i];
-      A[j][i] = tmp;
-    }
-  }
-  while ((d = diff(A, b, x, n)) > 1e-6) {
+  while ((d = ndiag_diff(A, b, x, n)) > 1e-6) {
     if (cnt >= 600) break;
     cnt++;
-    inner_fom(A, b, x, n, 10);
-    //cerr << "Answer: ";
-    //for (int i = 0; i < n; i++) {
-      //cerr << xm[i] << " ";
-    //}
-    //cerr << endl;
-    //cerr << "diff = " << diff(A, b, xm, n) << endl;
-    cerr << d << endl;
+    ndiag_inner_fom(A, b, x, n, 10);
+    if ((cnt&15) == 0)cerr << d << endl;
   }
   cerr << d << endl;
-  for (int i = 0; i < n; i++) {
-    for (int j = i+1; j < n; j++) {
-      double tmp = A[i][j];
-      A[i][j] = A[j][i];
-      A[j][i] = tmp;
-    }
-  }
+  cerr << cnt << " iterations" << endl;
 }
 #endif

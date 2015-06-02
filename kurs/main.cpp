@@ -22,11 +22,11 @@ int main(void) {
     for (int j = 0; j < n1; j++) {
         x[j] =(coord*)malloc(sizeof(coord)*n2);
     }
-    Kend = (double**)malloc(sizeof(double*)*m);
+    Kend = (double*)malloc(sizeof(double*)*(m-n1*2)*4);
     Fend = (double*)malloc(sizeof(double)*m);
     Xend = (double*)malloc(sizeof(double)*m);
-    for (int i = 0; i < m; i++) {
-        Kend[i] = (double*)malloc(sizeof(double)*m);
+    for (int i = 0; i < 4*(m-n1*2); i++) {
+        Kend[i] = 0.0;
     }
     int count = 1;
     for (int j = 0; j < n2; j++) {
@@ -38,16 +38,6 @@ int main(void) {
         }
     }
     Allelements(x);
-    // cout << CheckSymmetric(Kend);
-    // cout <<'\t'<< m<<endl<< endl;
-    for (int j = 0; j < m; j++) {
-        for (int i = 0; i < m; i++){
-            // cout << Kend[i][j] <<' ';
-        }
-        // cout << "  " <<Fend[j]<<endl;
-    }
-    // cout <<endl;
-    // GaussZ(Kend, Fend, Xend);
     fom(Kend, Fend, Xend, m);
     for (int i = 0; i < m; i++){
         cout << fixed << setprecision(5) << (i%n1)*hx << " " << (i/n1)*hy << " " << Xend[i] << endl;
@@ -55,9 +45,6 @@ int main(void) {
     cerr << endl<< "Time: " << (double) (clock()-t1) / (double)CLOCKS_PER_SEC << endl;
     for (int j = 0; j < n1; j++) {
         free(x[j]);
-    }
-    for (int i = 0; i < m; i++) {
-        free(Kend[i]);
     }
     free(x);
     free(Kend);

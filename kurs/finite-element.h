@@ -34,10 +34,10 @@ struct coord
     }
 };
 const double PI = acos(-1.0);
-const double L = 2, M = 2, eps = 0.0000001;//L - длина прямоугольника, M - ширина
-const int n1 = 50, n2 = 50, m = n1*n2, n = 2*(n1-1)*(n2-1);
+const double L = 50, M = 50, eps = 6.5;//L - длина прямоугольника, M - ширина
+const int n1 = 250, n2 = 250, m = n1*n2, n = 2*(n1-1)*(n2-1);
 const double hx = L/(n1-1), hy = M/(n2-1);
-double **Kend, *Fend, *Xend;
+double *Kend, *Fend, *Xend;
 
 double lmb(double x, double y){
     return 1;
@@ -46,13 +46,14 @@ double lmb(double x, double y){
 
 double q(coord x){
     // return -2.0*cos(2.0*x.x);
+    return 50.0;
     return 0;
     return 2.0*cos(2.0*x.x);
 }
 double g(coord x){ // краевые условия на верхней и нижней границе области
     // return cos(x.x)*cos(x.x);
     // return sin(x.x)*sin(x.x) + 2.0*x.x*x.y;
-    return (x.y == 0 ? 50 : 100);
+    return (x.y == 0 ? 30 : 220);
 }
 
 void element(coord x1, coord x2, coord x3){ //построение матрицы Kij и сливание с матрицей теплопроводности
@@ -82,7 +83,16 @@ void element(coord x1, coord x2, coord x3){ //построение матриц�
     
     for (int j = 0; j < 3; j++) {
         for (int i = 0; i < 3; i++) {
-            Kend[triangle[i].num-1][triangle[j].num-1]+=k[j][i];
+            int t1 = triangle[i].num-1, t2 = triangle[j].num-1;
+            if (t2 < n1 || t2 >= m-n1 || k[j][i] == 0.0) continue;
+            if (t1 == t2-n1 || t1 == t2+n1) Kend[(t2-n1)*4] += k[j][i]*0.5;
+            else if (t1 == t2-1) Kend[(t2-n1)*4 + 1] += k[j][i];
+            else if (t1 == t2)   Kend[(t2-n1)*4 + 2] += k[j][i];
+            else if (t1 == t2+1) Kend[(t2-n1)*4 + 3] += k[j][i];
+            else { // если мы всё-таки пропустили какой-нибудь случай
+              cerr << "ERROR!" << endl;
+              exit(0);
+            }
         }
         Fend[triangle[j].num-1]+=f[j];
     }
@@ -95,9 +105,6 @@ void squareTwoEl(coord x1, coord x2, coord x3, coord x4){ //разбиваем �
 
 void Allelements(coord ** x){ //р
     for (int j = 0; j < m; j++) {
-        for (int i = 0; i < m; i++) {
-            Kend[i][j] = 0.0;
-        }
         Fend[j] = 0.0;
         Xend[j] = 0.0;
     }
@@ -107,15 +114,9 @@ void Allelements(coord ** x){ //р
         }
     }
     for (int i = 0; i < n1; i++) {
-        for (int j = 0; j < m; j++) {
-            Kend[j][i] = (i == j);
-        }
         Fend[i] = g(coord(i*hx, 0));
     }
     for (int i = 0; i < n1; i++) {
-        for (int j = 0; j < m; j++) {
-            Kend[j][m-n1+i] = (m-n1+i == j);
-        }
         Fend[m-n1+i] = g(coord(i*hx, M));
     }
 }

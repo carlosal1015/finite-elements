@@ -29,6 +29,33 @@ inline double* mult_matrix_to_vector_inplace(double** A, double* v, int n, doubl
   return w;
 }
 
+inline double* mult_ndiag_matrix_to_vector(double* A, double* b, int n)  {
+  double* v = new double[n];
+  for (int i = 0; i < n1; i++) {
+    v[i] = b[i];  // потому что первые т1 строк -- единичная диагональ
+  }
+  for (int i = n1; i < n-n1; i++) {
+    v[i] = A[(i-n1)*4] * (b[i-n1] + b[i+n1]) + A[(i-n1)*4 + 1] * b[i-1] + A[(i-n1)*4 + 2] * b[i] + A[(i-n1)*4 + 3] * b[i+1];
+  }
+  for (int i = n-n1; i < n; i++) {
+    v[i] = b[i];  // потому что последние т1 строк -- единичная диагональ
+  }
+  return v;
+}
+
+inline double* mult_ndiag_matrix_to_vector_inplace(double* A, double* b, int n, double* v) {
+  for (int i = 0; i < n1; i++) {
+    v[i] = b[i];  // потому что первые т1 строк -- единичная диагональ
+  }
+  for (int i = n1; i < n-n1; i++) {
+    v[i] = A[(i-n1)*4] * (b[i-n1] + b[i+n1]) + A[(i-n1)*4 + 1] * b[i-1] + A[(i-n1)*4 + 2] * b[i] + A[(i-n1)*4 + 3] * b[i+1];
+  }
+  for (int i = n-n1; i < n; i++) {
+    v[i] = b[i];  // потому что последние т1 строк -- единичная диагональ
+  }
+  return v;
+}
+
 inline double* mult_vector_to_scalar(double* v, double c, int n) {
   double* w = new double[n];
   for (int i = 0; i < n; i++) {
