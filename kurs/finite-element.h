@@ -90,8 +90,8 @@ void element(coord x1, coord x2, coord x3){ //построение матриц�
             else if (t1 == t2)   Kend[(t2-n1)*4 + 2] += k[j][i];
             else if (t1 == t2+1) Kend[(t2-n1)*4 + 3] += k[j][i];
             else { // если мы всё-таки пропустили какой-нибудь случай
-              cerr << "ERROR!" << endl;
-              exit(0);
+                cerr << "ERROR!" << endl;
+                exit(0);
             }
         }
         Fend[triangle[j].num-1]+=f[j];
