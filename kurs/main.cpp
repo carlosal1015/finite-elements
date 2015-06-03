@@ -22,7 +22,7 @@ int main(void) {
     for (int j = 0; j < n1; j++) {
         x[j] =(coord*)malloc(sizeof(coord)*n2);
     }
-    Kend = (double*)malloc(sizeof(double*)*(m-n1*2)*4);
+    Kend = (double*)malloc(sizeof(double)*(m-n1*2)*4);
     Fend = (double*)malloc(sizeof(double)*m);
     Xend = (double*)malloc(sizeof(double)*m);
     for (int i = 0; i < 4*(m-n1*2); i++) {
